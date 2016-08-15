@@ -4,7 +4,7 @@ FROM registry.access.redhat.com/rhel7.2
 RUN curl -o /etc/yum.repos.d/rhel7-latest.repo http://git.app.eng.bos.redhat.com/git/perf-dept.git/plain/repo_files/rhel7-latest.repo
 
 # Install required packages 
-RUN yum install -y java-1.8.0-openjdk-headless tar && yum clean all
+RUN yum install -y bc java-1.8.0-openjdk-headless tar && yum clean all
 
 # Setup jmeter
 RUN mkdir -p /opt/jmeter && \
