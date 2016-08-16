@@ -1,7 +1,13 @@
 FROM registry.access.redhat.com/rhel7.2
 
+# Docker Token
+ENV docker_token
+
 # Setup repos
-RUN curl -o /etc/yum.repos.d/rhel7-latest.repo http://git.app.eng.bos.redhat.com/git/perf-dept.git/plain/repo_files/rhel7-latest.repo
+RUN curl -o /etc/yum.repos.d/oso-rhui-rhel-server-releases.repo https://raw.githubusercontent.com/openshift/aos-ansible/master/playbooks/roles/ops_mirror_bootstrap/files/oso-rhui-rhel-server-releases.repo?token=${docker_token} && \
+    curl -o /etc/yum.repos.d/oso-rhui-rhel-server-extras.repo https://raw.githubusercontent.com/openshift/aos-ansible/master/playbooks/roles/ops_mirror_bootstrap/files/oso-rhui-rhel-server-extras.repo?token=${docker_token} && \
+    curl -o /var/lib/yum/client-cert.pem https://raw.githubusercontent.com/openshift/aos-ansible/master/playbooks/roles/ops_mirror_bootstrap/files/client-cert.pem?token=${docker_token} && \
+    curl -o /var/lib/yum/client-key.pem https://raw.githubusercontent.com/openshift/aos-ansible/master/playbooks/roles/ops_mirror_bootstrap/files/client-key.pem?token=${docker_token}
 
 # Install required packages 
 RUN yum install -y bc java-1.8.0-openjdk-headless tar && yum clean all
