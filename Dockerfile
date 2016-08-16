@@ -1,13 +1,14 @@
 FROM registry.access.redhat.com/rhel7.2
 
 # Docker Token
-ENV docker_token
+ARG docker_token
 
 # Setup repos
-RUN curl -o /etc/yum.repos.d/oso-rhui-rhel-server-releases.repo https://raw.githubusercontent.com/openshift/aos-ansible/master/playbooks/roles/ops_mirror_bootstrap/files/oso-rhui-rhel-server-releases.repo?token=${docker_token} && \
-    curl -o /etc/yum.repos.d/oso-rhui-rhel-server-extras.repo https://raw.githubusercontent.com/openshift/aos-ansible/master/playbooks/roles/ops_mirror_bootstrap/files/oso-rhui-rhel-server-extras.repo?token=${docker_token} && \
-    curl -o /var/lib/yum/client-cert.pem https://raw.githubusercontent.com/openshift/aos-ansible/master/playbooks/roles/ops_mirror_bootstrap/files/client-cert.pem?token=${docker_token} && \
-    curl -o /var/lib/yum/client-key.pem https://raw.githubusercontent.com/openshift/aos-ansible/master/playbooks/roles/ops_mirror_bootstrap/files/client-key.pem?token=${docker_token}
+RUN curl -H "Authorization: token ${docker_token}" -H 'Accept: application/vnd.github.v3.raw' -O -Ls https://api.github.com/repos/openshift/aos-ansible/contents/playbooks/roles/ops_mirror_bootstrap/files/client-cert.pem && \
+    curl -H "Authorization: token ${docker_token}" -H 'Accept: application/vnd.github.v3.raw' -O -Ls https://api.github.com/repos/openshift/aos-ansible/contents/playbooks/roles/ops_mirror_bootstrap/files/client-key.pem && \
+    curl -H "Authorization: token ${docker_token}" -H 'Accept: application/vnd.github.v3.raw' -O -Ls https://api.github.com/repos/openshift/aos-ansible/contents/playbooks/roles/ops_mirror_bootstrap/files/oso-rhui-rhel-server-extras.repo && \
+    curl -H "Authorization: token ${docker_token}" -H 'Accept: application/vnd.github.v3.raw' -O -Ls https://api.github.com/repos/openshift/aos-ansible/contents/playbooks/roles/ops_mirror_bootstrap/files/oso-rhui-rhel-server-releases.repo && \
+    mv *.pem /var/lib/yum/ && mv *.repo /etc/yum.repos.d/
 
 # Install required packages 
 RUN yum install -y bc java-1.8.0-openjdk-headless tar && yum clean all
